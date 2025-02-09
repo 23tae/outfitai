@@ -2,7 +2,7 @@ from PIL import Image
 import os
 from shutil import copyfile, rmtree
 from typing import Tuple
-
+import base64
 from config import UtilsConfig
 
 
@@ -78,3 +78,11 @@ def resize_image(image_path: str, target_size: int = UtilsConfig.IMG_THRESHOLD) 
     except Exception as e:
         print(f'Image resize failed: {str(e)}')
         raise
+
+
+def encode_image(image_path):
+    """
+    이미지를 Base64로 변환한다.
+    """
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode("utf-8")

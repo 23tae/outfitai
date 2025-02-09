@@ -1,9 +1,8 @@
 import openai
 from PIL import Image
-import io
 import json
-import base64
 from config import OpenAIConfig
+from utils import encode_image
 
 openai.api_key = OpenAIConfig.API_KEY
 
@@ -21,9 +20,7 @@ def classify_clothing_item_openai(image_path):
 
     try:
         img = Image.open(image_path)
-        buffered = io.BytesIO()
-        img.save(buffered, format=img.format)
-        img_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
+        img_base64 = encode_image(image_path)
 
         prompt_text = f"""
         Analyze the clothing item in the image and classify it according to these rules.

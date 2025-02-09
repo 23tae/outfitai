@@ -1,6 +1,5 @@
 import sys
 from shutil import rmtree
-
 from utils import check_image_size
 from classify_openai import classify_clothing_item_openai
 from config import UtilsConfig

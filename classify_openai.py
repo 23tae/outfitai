@@ -28,14 +28,14 @@ def classify_clothing_item_openai(image_path):
         prompt_text = f"""
         Analyze the clothing item in the image and classify it according to these rules.
         Return a JSON object with these keys:
-        - 'color': Primary color as a single English word
+        - 'color': Primary color as a HEX code (e.g. #FF0000)
         - 'category': 1 values from {category_values}
         - 'dresscode': 1 values from {dresscode_values}
         - 'season': 1+ values from {season_values} (array)
 
         Example:
         {{
-            "color": "red",
+            "color": "#FF0000",
             "category": "outer",
             "dresscode": "formal",
             "season": ["fall", "winter"]

@@ -2,7 +2,7 @@ import logging
 import sys
 from typing import Optional
 from pathlib import Path
-from config import get_settings
+from config.settings import get_settings
 
 
 def setup_logger(name: str, log_file: Optional[str] = None) -> logging.Logger:

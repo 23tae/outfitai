@@ -3,9 +3,9 @@ from pathlib import Path
 import base64
 from typing import Tuple
 from functools import lru_cache
-from exceptions import ImageProcessingError
-from config import get_settings
-from logger import setup_logger
+from error.exceptions import ImageProcessingError
+from config.settings import get_settings
+from utils.logger import setup_logger
 
 
 class ImageProcessor:

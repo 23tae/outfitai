@@ -2,7 +2,7 @@ import click
 import asyncio
 from pathlib import Path
 import json
-from classify_openai import OpenAIClassifier
+from classifier.openai import OpenAIClassifier
 
 
 @click.group()

@@ -24,13 +24,13 @@ AI 기반 의류 이미지 분류 도구입니다. OpenAI의 GPT-4o mini 모델�
   source .venv/bin/activate  # Windows: .venv\Scripts\activate
   ```
 
-2. 필요한 패키지 설치
+2. 패키지 설치
 
   ```bash
-  pip install -r requirements.txt
+  pip install -e .
   ```
 
-3. 환경변수 설정 (`.env` 파일)
+3. 환경변수 설정 (`.env` 파일 생성)
 
   ```
   OPENAI_API_KEY=your_api_key
@@ -41,19 +41,19 @@ AI 기반 의류 이미지 분류 도구입니다. OpenAI의 GPT-4o mini 모델�
 ### 단일 이미지 분석
 
 ```bash
-python main.py classify image.jpg
+ai-fc classify image.jpg
 ```
 
 ### 다중 이미지 처리
 
 ```bash
-python main.py classify images_directory/ --batch
+ai-fc classify images_directory/ --batch
 ```
 
 ### 결과 저장
 
 ```bash
-python main.py classify image.jpg -o result.json
+ai-fc classify image.jpg -o result.json
 ```
 
 ### 출력 예시

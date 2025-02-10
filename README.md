@@ -41,19 +41,19 @@ AI 기반 의류 이미지 분류 도구입니다. OpenAI의 GPT-4o mini 모델�
 ### 단일 이미지 분석
 
 ```bash
-ai-fc classify image.jpg
+ai-fc image.jpg
 ```
 
 ### 다중 이미지 처리
 
 ```bash
-ai-fc classify images_directory/ --batch
+ai-fc images_directory/ -b
 ```
 
 ### 결과 저장
 
 ```bash
-ai-fc classify image.jpg -o result.json
+ai-fc image.jpg -o result.json
 ```
 
 ### 출력 예시

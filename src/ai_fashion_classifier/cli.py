@@ -2,20 +2,14 @@ import click
 import asyncio
 from pathlib import Path
 import json
-from classifier.openai import OpenAIClassifier
+from .classifier.openai import OpenAIClassifier
 
 
-@click.group()
-def cli():
-    """AI Fashion Classifier CLI tool."""
-    pass
-
-
-@cli.command()
+@click.command()
 @click.argument('image_path', type=click.Path(exists=True))
-@click.option('--batch', is_flag=True, help='Process multiple images')
+@click.option('--batch', '-b', is_flag=True, help='Process multiple images')
 @click.option('--output', '-o', type=click.Path(), help='Output file path')
-def classify(image_path: str, batch: bool, output: str):
+def cli(image_path: str, batch: bool, output: str):
     """Classify clothes in images."""
     async def run():
         classifier = OpenAIClassifier()

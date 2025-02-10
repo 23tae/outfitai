@@ -19,7 +19,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'ai-fc=cli.main:cli',
+            'ai-fc=ai_fashion_classifier.__main__:main',
         ],
     },
 )

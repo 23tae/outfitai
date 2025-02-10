@@ -2,10 +2,10 @@ import openai
 import json
 from typing import Dict, List, Any, Optional
 import asyncio
-from error.exceptions import APIError, ValidationError
-from utils.logger import setup_logger
-from config.settings import get_settings
-from utils.utils import ImageProcessor
+from ..error.exceptions import APIError, ValidationError
+from ..utils.logger import setup_logger
+from ..utils.utils import ImageProcessor
+from ..config.settings import get_settings
 
 
 class OpenAIClassifier:

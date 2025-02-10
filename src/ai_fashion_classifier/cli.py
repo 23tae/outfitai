@@ -1,8 +1,8 @@
 import click
-import asyncio
 from pathlib import Path
 import json
 from .classifier.openai import OpenAIClassifier
+import asyncio
 
 
 @click.command()
@@ -11,23 +11,19 @@ from .classifier.openai import OpenAIClassifier
 @click.option('--output', '-o', type=click.Path(), help='Output file path')
 def cli(image_path: str, batch: bool, output: str):
     """Classify clothes in images."""
-    async def run():
+    try:
         classifier = OpenAIClassifier()
 
-        if batch:
-            # If directory, process all images
-            if Path(image_path).is_dir():
-                image_paths = [
-                    str(p) for p in Path(image_path).glob("*")
-                    if p.suffix.lower() in ['.jpg', '.jpeg', '.png']
-                ]
-                results = await classifier.classify_batch(image_paths)
+        async def process():
+            if batch:
+                if not Path(image_path).is_dir():
+                    click.echo("Specified path is not a directory")
+                    return
+                return await classifier.classify_batch(image_path)
             else:
-                click.echo("Specified path is not a directory")
-                return
-        else:
-            # Process single image
-            results = [await classifier.classify_single(image_path)]
+                return [await classifier.classify_single(image_path)]
+
+        results = asyncio.run(process())
 
         # Output results
         if output:
@@ -37,4 +33,6 @@ def cli(image_path: str, batch: bool, output: str):
         else:
             click.echo(json.dumps(results, indent=2))
 
-    asyncio.run(run())
+    except Exception as e:
+        click.echo(f"Error: {str(e)}", err=True)
+        raise click.Abort()

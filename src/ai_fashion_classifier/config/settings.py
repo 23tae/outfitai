@@ -1,5 +1,6 @@
 from functools import lru_cache
 from pydantic_settings import BaseSettings
+from typing import Optional
 
 
 class Settings(BaseSettings):
@@ -14,7 +15,14 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if self.OPENAI_API_KEY is None:
+            raise ValueError(
+                "OPENAI_API_KEY must be provided either through environment variables, "
+                ".env file, or directly to the constructor")
 
-@lru_cache()
-def get_settings():
-    return Settings()
+    @classmethod
+    def from_dict(cls, settings_dict: dict) -> 'Settings':
+        """Create Settings instance from dictionary."""
+        return cls(**settings_dict)

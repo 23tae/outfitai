@@ -6,9 +6,10 @@ AI-based clothing image classification tool using OpenAI API. The tool analyzes 
 
 - Image classification (color, category, dress code, season)
 - Image size optimization
-- CLI interface
+- Both CLI and library usage support
 - Single image and batch processing support
 - Performance optimization through async processing
+- Flexible configuration management
 
 ## Requirements
 
@@ -37,47 +38,65 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -e .
 ```
 
-### Set OpenAI API Key
-
-1. by Shell command (Recommended):
-    ```bash
-    export OPENAI_API_KEY=your-api-key
-    ```
-
-2. by `.bashrc` or `.zshrc`:
-    ```bash
-    echo 'export OPENAI_API_KEY=your-api-key' >> ~/.bashrc
-    ```
-
-3. by `.env` file:
-    ```
-    OPENAI_API_KEY=your_api_key
-    ```
-
 ## Usage
 
-### Basic Usage
+### 1. As a Library
+
+You can use AI Fashion Classifier in your Python code:
+
+```python
+from ai_fashion_classifier import OpenAIClassifier, Settings
+import asyncio
+
+# Method 1: Use environment variables or .env file
+classifier = OpenAIClassifier()
+
+# Method 2: Direct settings
+settings = Settings(OPENAI_API_KEY="your-api-key")
+classifier = OpenAIClassifier(settings)
+
+# Method 3: Dictionary settings
+classifier = OpenAIClassifier({
+    "OPENAI_API_KEY": "your-api-key",
+    "BATCH_SIZE": 5
+})
+
+# Process single image
+async def process_single():
+    result = await classifier.classify_single("path/to/image.jpg")
+    print(result)
+
+# Process multiple images
+async def process_batch():
+    # From directory
+    results = await classifier.classify_batch("path/to/images/")
+    # Or from list of files
+    results = await classifier.classify_batch(["image1.jpg", "image2.jpg"])
+    print(results)
+
+# Run async functions
+asyncio.run(process_single())
+asyncio.run(process_batch())
+```
+
+### 2. Command Line Interface
 
 Process a single image and display results:
 ```bash
 ai-fc path/to/image.jpg
 ```
 
-### Save Results to File
-
-Analyze image and save results as JSON:
+Save results to file:
 ```bash
 ai-fc path/to/image.jpg --output result.json
 ```
-
-### Batch Processing
 
 Process all images in a directory:
 ```bash
 ai-fc path/to/images/ --batch
 ```
 
-### Options
+### CLI Options
 
 ```
 Required:
@@ -101,10 +120,32 @@ Optional:
 
 ## Configuration
 
-Settings are managed by Shell command or `settings.py` file:
-```bash
-  export OPENAI_API_KEY=your-api-key
-```
+### Setting OpenAI API Key
+
+1. Environment variable (Recommended):
+    ```bash
+    export OPENAI_API_KEY=your-api-key
+    ```
+
+2. In `.bashrc` or `.zshrc`:
+    ```bash
+    echo 'export OPENAI_API_KEY=your-api-key' >> ~/.bashrc
+    ```
+
+3. `.env` file in project root:
+    ```
+    OPENAI_API_KEY=your_api_key
+    ```
+
+4. Direct in code:
+    ```python
+    settings = Settings(OPENAI_API_KEY="your-api-key")
+    classifier = OpenAIClassifier(settings)
+    ```
+
+### Available Settings
+
+All settings can be configured through environment variables, `.env` file, or in code:
 
 - Required:
   - `OPENAI_API_KEY`: **OpenAI API key**
@@ -115,7 +156,20 @@ Settings are managed by Shell command or `settings.py` file:
   - `LOG_LEVEL`: Logging level (default: INFO)
   - `BATCH_SIZE`: Batch processing size (default: 10)
 
+Example of using custom settings:
+```python
+settings = Settings(
+    OPENAI_API_KEY="your-api-key",
+    OPENAI_MODEL="gpt-4o",
+    BATCH_SIZE=5,
+    LOG_LEVEL="DEBUG"
+)
+classifier = OpenAIClassifier(settings)
+```
+
 ## Notes
 
-- Temporary files are automatically deleted after image processing
 - API costs vary by OpenAI model ([reference](https://platform.openai.com/docs/pricing))
+- When using as a library, remember that the classifier methods are asynchronous
+- The library automatically handles image resizing and optimization
+- Temporary files are automatically deleted after image processing

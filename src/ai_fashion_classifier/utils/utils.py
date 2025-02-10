@@ -1,17 +1,18 @@
 from PIL import Image
 from pathlib import Path
 import base64
-from typing import Tuple
+from typing import Tuple, Optional
 from functools import lru_cache
 from ..error.exceptions import ImageProcessingError
-from ..config.settings import get_settings
-from .logger import setup_logger
+from ..config.settings import Settings
+from .logger import Logger
 
 
 class ImageProcessor:
-    def __init__(self):
-        self.settings = get_settings()
-        self.logger = setup_logger(__name__)
+    def __init__(self, settings: Optional[Settings] = None):
+        self.settings = settings or Settings()
+        logger_manager = Logger(self.settings)
+        self.logger = logger_manager.setup_logger(__name__)
         self._setup_temp_directory()
 
     def _setup_temp_directory(self):

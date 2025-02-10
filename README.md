@@ -2,8 +2,6 @@
 
 AI-based clothing image classification tool using OpenAI API. The tool analyzes clothing images and outputs color, category, dress code, and seasonal information in JSON format.
 
-[한국어 문서](./README_ko.md)
-
 ## Features
 
 - Image classification (color, category, dress code, season)
@@ -39,12 +37,22 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -e .
 ```
 
-### Environment Setup
+### Set OpenAI API Key
 
-Create `.env` file:
-```
-OPENAI_API_KEY=your_api_key
-```
+1. by Shell command (Recommended):
+    ```bash
+    export OPENAI_API_KEY=your-api-key
+    ```
+
+2. by `.bashrc` or `.zshrc`:
+    ```bash
+    echo 'export OPENAI_API_KEY=your-api-key' >> ~/.bashrc
+    ```
+
+3. by `.env` file:
+    ```
+    OPENAI_API_KEY=your_api_key
+    ```
 
 ## Usage
 
@@ -93,13 +101,19 @@ Optional:
 
 ## Configuration
 
-Settings are managed in the `Settings` class:
-- `OPENAI_API_KEY`: OpenAI API key
-- `MODEL`: OpenAI model to use (default: gpt-4o-mini) ([reference](https://platform.openai.com/docs/models))
-- `TEMP_DIRECTORY`: Temporary file storage path (default: tmp)
-- `IMG_THRESHOLD`: Maximum image pixel size (default: 512) ([reference](https://platform.openai.com/docs/guides/vision))
-- `LOG_LEVEL`: Logging level (default: INFO)
-- `BATCH_SIZE`: Batch processing size (default: 10)
+Settings are managed by Shell command or `settings.py` file:
+```bash
+  export OPENAI_API_KEY=your-api-key
+```
+
+- Required:
+  - `OPENAI_API_KEY`: **OpenAI API key**
+- Optional:
+  - `OPENAI_MODEL`: OpenAI model to use (default: gpt-4o-mini) ([reference](https://platform.openai.com/docs/models))
+  - `TEMP_DIRECTORY`: Temporary file storage path (default: tmp)
+  - `IMG_THRESHOLD`: Maximum image pixel size (default: 512) ([reference](https://platform.openai.com/docs/guides/vision))
+  - `LOG_LEVEL`: Logging level (default: INFO)
+  - `BATCH_SIZE`: Batch processing size (default: 10)
 
 ## Notes
 

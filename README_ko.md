@@ -37,12 +37,22 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -e .
 ```
 
-### 환경 설정
+### OpenAI API Key 설정
 
-`.env` 파일 생성:
-```
-OPENAI_API_KEY=your_api_key
-```
+1. Shell 명령어 실행 (권장):
+    ```bash
+    export OPENAI_API_KEY=your-api-key
+    ```
+
+2. `.bashrc` 또는 `.zshrc` 설정:
+    ```bash
+    echo 'export OPENAI_API_KEY=your-api-key' >> ~/.bashrc
+    ```
+
+3. `.env` 파일 생성:
+    ```
+    OPENAI_API_KEY=your_api_key
+    ```
 
 ## 사용 방법
 
@@ -88,14 +98,20 @@ ai-fc path/to/images/ --batch
 
 ## 설정 관리
 
-`Settings` 클래스에서 다음 설정을 관리합니다.
-- `OPENAI_API_KEY`: OpenAI API 키
-- `MODEL`: 사용할 OpenAI 모델 (기본값: gpt-4o-mini) ([참고](https://platform.openai.com/docs/models))
-- `TEMP_DIRECTORY`: 임시 파일 저장 경로 (기본값: tmp)
-- `IMG_THRESHOLD`: 이미지 최대 픽셀 크기 (기본값: 512) ([참고](https://platform.openai.com/docs/guides/vision))
-- `LOG_LEVEL`: 로깅 레벨 (기본값: INFO)
-- `BATCH_SIZE`: 배치 처리 크기 (기본값: 10)
+Shell 명령어 또는 `settings.py` 파일을 통해 설정을 관리합니다.
+```bash
+  export OPENAI_API_KEY=your-api-key
+```
 
-## 참고사항
+- 필수 사항
+  - `OPENAI_API_KEY`: **OpenAI API 키**
+- 선택 사항
+  - `OPENAI_MODEL`: 사용할 OpenAI 모델 (기본값: gpt-4o-mini) ([참고](https://platform.openai.com/docs/models))
+  - `TEMP_DIRECTORY`: 임시 파일 저장 경로 (기본값: tmp)
+  - `IMG_THRESHOLD`: 이미지 최대 픽셀 크기 (기본값: 512) ([참고](https://platform.openai.com/docs/guides/vision))
+  - `LOG_LEVEL`: 로깅 레벨 (기본값: INFO)
+  - `BATCH_SIZE`: 배치 처리 크기 (기본값: 10)
+
+## 참고 사항
 - 이미지 처리 후 임시 파일은 자동으로 삭제됩니다
 - OpenAI 모델별로 API 호출 비용에 차이가 있습니다 ([참고](https://platform.openai.com/docs/pricing))

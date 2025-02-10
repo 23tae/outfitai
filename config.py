@@ -1,17 +1,19 @@
-import os
-from dotenv import load_dotenv
-
-if not load_dotenv():
-    print("Warning: .env file not found")
+from functools import lru_cache
+from pydantic_settings import BaseSettings
 
 
-class UtilsConfig:
-    TEMP_DIRECTORY = 'tmp'
-    IMG_THRESHOLD = 512
+class Settings(BaseSettings):
+    OPENAI_API_KEY: str
+    MODEL: str = "gpt-4o-mini"
+    TEMP_DIRECTORY: str = "tmp"
+    IMG_THRESHOLD: int = 512
+    LOG_LEVEL: str = "INFO"
+    BATCH_SIZE: int = 10
+
+    class Config:
+        env_file = ".env"
 
 
-class OpenAIConfig:
-    API_KEY = os.getenv("OPENAI_API_KEY")
-    if not API_KEY:
-        raise ValueError("OPENAI_API_KEY environment variable is not set")
-    MODEL = "gpt-4o-mini"
+@lru_cache()
+def get_settings():
+    return Settings()

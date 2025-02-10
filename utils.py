@@ -1,88 +1,70 @@
 from PIL import Image
-import os
-from shutil import copyfile, rmtree
-from typing import Tuple
+from pathlib import Path
 import base64
-from config import UtilsConfig
+from typing import Tuple
+from functools import lru_cache
+from exceptions import ImageProcessingError
+from config import get_settings
+from logger import setup_logger
 
 
-class ImageSizeError(Exception):
-    pass
+class ImageProcessor:
+    def __init__(self):
+        self.settings = get_settings()
+        self.logger = setup_logger(__name__)
+        self._setup_temp_directory()
 
+    def _setup_temp_directory(self):
+        """Set up temporary directory for processed images."""
+        temp_dir = Path(self.settings.TEMP_DIRECTORY)
+        if temp_dir.exists():
+            for file in temp_dir.glob("*"):
+                file.unlink()
+        else:
+            temp_dir.mkdir(parents=True)
 
-def get_image_dimensions(image: Image.Image) -> Tuple[int, int]:
-    """이미지의 width와 height를 반환한다."""
-    return image.size
+    def get_image_dimensions(self, image: Image.Image) -> Tuple[int, int]:
+        """Return the dimensions of an image."""
+        return image.size
 
+    def should_resize(self, width: int, height: int) -> bool:
+        """Check if image needs resizing."""
+        return max(width, height) > self.settings.IMG_THRESHOLD
 
-def should_resize(width: int, height: int, threshold: int = UtilsConfig.IMG_THRESHOLD) -> bool:
-    """더 긴 변이 threshold를 초과하는지 확인한다."""
-    return max(width, height) > threshold
+    @lru_cache(maxsize=100)
+    def encode_image(self, image_path: str) -> str:
+        """Encode image to base64 with caching."""
+        try:
+            with open(image_path, "rb") as image_file:
+                return base64.b64encode(image_file.read()).decode("utf-8")
+        except Exception as e:
+            raise ImageProcessingError(f"Failed to encode image: {str(e)}")
 
+    async def process_image(self, image_path: str) -> str:
+        """Process a single image."""
+        try:
+            img = Image.open(image_path)
+            width, height = self.get_image_dimensions(img)
 
-def prepare_temp_directory(temp_dir: str) -> None:
-    if os.path.exists(temp_dir):
-        if os.path.isdir(temp_dir):
-            rmtree(temp_dir)
-    os.makedirs(temp_dir, exist_ok=True)
+            temp_path = Path(self.settings.TEMP_DIRECTORY) / \
+                Path(image_path).name
 
+            if self.should_resize(width, height):
+                return await self._resize_image(img, temp_path)
+            else:
+                img.save(temp_path)
+                return str(temp_path)
 
-def check_image_size(image_path: str, temp_dir: str = UtilsConfig.TEMP_DIRECTORY) -> str:
-    """
-    이미지 크기를 확인하고 필요한 경우 리사이징한다.
-    """
-    try:
-        with Image.open(image_path) as im:
-            width, height = get_image_dimensions(im)
+        except Exception as e:
+            raise ImageProcessingError(f"Failed to process image: {str(e)}")
 
-        prepare_temp_directory(temp_dir)
+    async def _resize_image(self, img: Image.Image, output_path: Path) -> str:
+        """Resize image maintaining aspect ratio."""
+        width, height = self.get_image_dimensions(img)
+        ratio = self.settings.IMG_THRESHOLD / max(width, height)
 
-        filename = os.path.basename(image_path)
-        temp_image_path = os.path.join(temp_dir, filename)
-        copyfile(image_path, temp_image_path)
+        new_size = (int(width * ratio), int(height * ratio))
+        resized = img.resize(new_size, Image.Resampling.LANCZOS)
 
-        if should_resize(width, height):
-            return resize_image(temp_image_path)
-
-        return temp_image_path
-
-    except Exception as e:
-        raise ImageSizeError(f"Image erorr: {str(e)}")
-
-
-def resize_image(image_path: str, target_size: int = UtilsConfig.IMG_THRESHOLD) -> str:
-    """
-    이미지를 리사이징한다. 긴 쪽을 기준으로 비율을 유지하여 조정한다.
-    """
-    try:
-        with Image.open(image_path) as img:
-            width, height = get_image_dimensions(img)
-
-            # 긴 쪽을 기준으로 비율 계산
-            longer_side = max(width, height)
-            ratio = target_size / longer_side
-
-            new_width = int(width * ratio)
-            new_height = int(height * ratio)
-
-            resized_img = img.resize(
-                (new_width, new_height),
-                Image.Resampling.LANCZOS
-            )
-
-            new_image_path = f"{os.path.splitext(image_path)[0]}_resized.jpg"
-            resized_img.save(new_image_path, 'JPEG', quality=95)
-
-            return new_image_path
-
-    except Exception as e:
-        print(f'Image resize failed: {str(e)}')
-        raise
-
-
-def encode_image(image_path):
-    """
-    이미지를 Base64로 변환한다.
-    """
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode("utf-8")
+        resized.save(output_path, 'JPEG', quality=95)
+        return str(output_path)

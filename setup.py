@@ -3,7 +3,6 @@ from setuptools import setup, find_packages
 setup(
     name="ai_fashion_classifier",
     version="0.1.0",
-    description="AI-powered clothing image classifier using OpenAI's vision models",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     python_requires=">=3.8",
@@ -22,4 +21,15 @@ setup(
             'ai-fc=ai_fashion_classifier.__main__:main',
         ],
     },
+    author="23tae",
+    author_email="taehoonkim.dev@gmail.com",
+    description="AI-powered clothing image classifier using OpenAI API",
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
+    url="https://github.com/23tae/ai-fashion-classifier",
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
 )

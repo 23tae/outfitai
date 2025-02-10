@@ -4,7 +4,8 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     OPENAI_API_KEY: str
-    MODEL: str = "gpt-4o-mini"
+    OPENAI_MODEL: str = "gpt-4o-mini"
+    OPENAI_MAX_TOKENS: int = 300
     TEMP_DIRECTORY: str = "tmp"
     IMG_THRESHOLD: int = 512
     LOG_LEVEL: str = "INFO"

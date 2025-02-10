@@ -1,52 +1,53 @@
 import openai
-from PIL import Image
 import json
-from config import OpenAIConfig
-from utils import encode_image
+from typing import Dict, List, Any, Optional
+import asyncio
+from exceptions import APIError, ValidationError
+from logger import setup_logger
+from config import get_settings
+from utils import ImageProcessor
 
 
-class ClothingClassifier:
+class OpenAIClassifier:
     def __init__(self):
-        self.client = openai.OpenAI(api_key=OpenAIConfig.API_KEY)
+        self.settings = get_settings()
+        self.logger = setup_logger(__name__)
+        self.client = openai.AsyncOpenAI(api_key=self.settings.OPENAI_API_KEY)
+        self.image_processor = ImageProcessor()
         self._init_constants()
 
     def _init_constants(self):
-        self.category_values = ["top", "bottom", "outer",
-                                "dress", "footwear", "bag", "accessory", "other"]
-        self.dresscode_values = ["casual", "business",
-                                 "party", "sports", "formal", "other"]
+        """Initialize constant values used in classification."""
+        self.category_values = [
+            "top", "bottom", "outer", "dress",
+            "footwear", "bag", "accessory", "other"
+        ]
+        self.dresscode_values = [
+            "casual", "business", "party",
+            "sports", "formal", "other"
+        ]
         self.season_values = ["spring", "summer", "fall", "winter"]
         self.prompt_text = self._create_prompt()
 
-    def _create_prompt(self):
+    def _create_prompt(self) -> str:
+        """Create the prompt for the OpenAI API."""
         return f"""
         Analyze the clothing item in the image and classify it according to these rules.
         Return a JSON object with these keys:
         - 'color': Primary color as a HEX code (e.g. #FF0000)
-        - 'category': 1 values from {self.category_values}
-        - 'dresscode': 1 values from {self.dresscode_values}
+        - 'category': 1 value from {self.category_values}
+        - 'dresscode': 1 value from {self.dresscode_values}
         - 'season': 1+ values from {self.season_values} (array)
-
-        Example:
-        {{
-            "color": "#FF0000",
-            "category": "outer",
-            "dresscode": "formal",
-            "season": ["fall", "winter"]
-        }}
         """
 
-    def classify_clothes(self, image_path):
-        """
-        옷 사진을 입력받아 OpenAI API를 사용하여 JSON 형식으로 분류 결과를 반환한다.
-        """
-
+    async def classify_single(self, image_path: str) -> Dict[str, Any]:
+        """Classify a single clothing item."""
         try:
-            img = Image.open(image_path)
-            img_base64 = encode_image(image_path)
+            processed_path = await self.image_processor.process_image(image_path)
+            encoded_image = self.image_processor.encode_image(processed_path)
 
-            response = openai.chat.completions.create(
-                model=OpenAIConfig.MODEL,
+            response = await self.client.chat.completions.create(
+                model=self.settings.OPENAI_MODEL,
                 messages=[
                     {
                         "role": "user",
@@ -55,59 +56,73 @@ class ClothingClassifier:
                             {
                                 "type": "image_url",
                                 "image_url": {
-                                    "url": f"data:image/{img.format.lower()};base64,{img_base64}",
+                                    "url": f"data:image/jpeg;base64,{encoded_image}",
                                     "detail": "low"
                                 },
                             },
                         ],
                     }
                 ],
-                max_tokens=300,
-                response_format={"type": "json_object"}  # JSON 형식 응답 지정
+                max_tokens=self.settings.OPENAI_MAX_TOKENS,
+                response_format={"type": "json_object"}
             )
 
-            json_answer = response.choices[0].message.content
-
-            try:
-                data = json.loads(json_answer)
-
-                # 필수 키 검증
-                required_keys = ["color", "category", "dresscode", "season"]
-                if not all(key in data for key in required_keys):
-                    return f"Missing required keys. Expected: {required_keys}"
-
-                # 타입 검증
-                type_checks = [
-                    ("color", str),
-                    ("category", str),
-                    ("dresscode", str),
-                    ("season", list)
-                ]
-
-                for key, expected_type in type_checks:
-                    if not isinstance(data[key], expected_type):
-                        return f"'{key}' must be {expected_type.__name__}"
-
-                # 값 유효성 검사
-                validations = [
-                    ("category", self.category_values),
-                    ("dresscode", self.dresscode_values),
-                    ("season", self.season_values)
-                ]
-
-                for key, allowed_values in validations:
-                    if isinstance(data[key], list):  # 리스트인 경우
-                        for value in data[key]:
-                            if value not in allowed_values:
-                                return f"Invalid {key} value: {value}. Allowed: {allowed_values}"
-                    else:  # 단일 값인 경우
-                        if data[key] not in allowed_values:
-                            return f"Invalid {key} value: {data[key]}. Allowed: {allowed_values}"
-
-                return json.dumps(data, indent=2)
-
-            except json.JSONDecodeError as e:
-                return f"JSON Decode Error: {str(e)}\nResponse: {json_answer}"
+            result = json.loads(response.choices[0].message.content)
+            self._validate_response(result)
+            return result
 
         except Exception as e:
-            return f"Error: {str(e)}"
+            raise APIError(f"Error classifying image: {str(e)}")
+
+    async def classify_batch(
+        self,
+        image_paths: List[str],
+        batch_size: Optional[int] = None
+    ) -> List[Dict[str, Any]]:
+        """Classify multiple clothing items in batches."""
+        batch_size = batch_size or self.settings.BATCH_SIZE
+        results = []
+
+        for i in range(0, len(image_paths), batch_size):
+            batch = image_paths[i:i + batch_size]
+            tasks = [self.classify_single(path) for path in batch]
+            batch_results = await asyncio.gather(*tasks, return_exceptions=True)
+
+            for result in batch_results:
+                if isinstance(result, Exception):
+                    self.logger.error(
+                        f"Error in batch processing: {str(result)}")
+                    results.append({"error": str(result)})
+                else:
+                    results.append(result)
+
+        return results
+
+    def _validate_response(self, data: Dict[str, Any]):
+        """Validate the API response format and values."""
+        required_keys = ["color", "category", "dresscode", "season"]
+
+        # Check required keys
+        for key in required_keys:
+            if key not in data:
+                raise ValidationError(f"Missing required key: {key}")
+
+        # Validate color format
+        if not isinstance(data["color"], str) or not data["color"].startswith("#"):
+            raise ValidationError("Invalid color format")
+
+        # Validate category
+        if data["category"] not in self.category_values:
+            raise ValidationError(f"Invalid category: {data['category']}")
+
+        # Validate dresscode
+        if data["dresscode"] not in self.dresscode_values:
+            raise ValidationError(f"Invalid dresscode: {data['dresscode']}")
+
+        # Validate seasons
+        if not isinstance(data["season"], list):
+            raise ValidationError("Season must be a list")
+
+        for season in data["season"]:
+            if season not in self.season_values:
+                raise ValidationError(f"Invalid season: {season}")

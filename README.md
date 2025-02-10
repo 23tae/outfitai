@@ -1,62 +1,86 @@
 # AI Fashion Classifier
 
-AI 기반 의류 이미지 분류 도구입니다. OpenAI의 GPT-4o mini 모델을 사용하여 의류 이미지를 분석하고, 색상, 카테고리, 드레스 코드, 계절 정보 등을 JSON 형태로 출력합니다.
+AI-based clothing image classification tool using OpenAI API. The tool analyzes clothing images and outputs color, category, dress code, and seasonal information in JSON format.
 
-## 주요 기능
+[한국어 문서](./README_ko.md)
 
-- 이미지 분류(색상, 카테고리, 드레스 코드, 계절)
-- 이미지 크기 최적화
-- CLI 인터페이스 제공
-- 단일 이미지 및 배치 처리 지원
-- 비동기 처리를 통한 성능 최적화
+## Features
 
-## 시스템 요구사항
+- Image classification (color, category, dress code, season)
+- Image size optimization
+- CLI interface
+- Single image and batch processing support
+- Performance optimization through async processing
+
+## Requirements
 
 - Python 3
-- OpenAI API 키
 
-## 설치 방법
+## Installation
 
-1. 가상환경 생성 및 활성화
-
-  ```bash
-  python3 -m venv .venv
-  source .venv/bin/activate  # Windows: .venv\Scripts\activate
-  ```
-
-2. 패키지 설치
-
-  ```bash
-  pip install -e .
-  ```
-
-3. 환경변수 설정 (`.env` 파일 생성)
-
-  ```
-  OPENAI_API_KEY=your_api_key
-  ```
-
-## 사용 방법
-
-### 단일 이미지 분석
+### 1. Install from PyPI (Recommended)
 
 ```bash
-ai-fc image.jpg
+pip install ai-fashion-classifier
 ```
 
-### 다중 이미지 처리
+### 2. Install from source
 
 ```bash
-ai-fc images_directory/ -b
+# Clone repository
+git clone https://github.com/23tae/ai-fashion-classifier.git
+cd ai-fashion-classifier
+
+# Create and activate virtual environment
+python3 -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+# Install package
+pip install -e .
 ```
 
-### 결과 저장
+### Environment Setup
 
+Create `.env` file:
+```
+OPENAI_API_KEY=your_api_key
+```
+
+## Usage
+
+### Basic Usage
+
+Process a single image and display results:
 ```bash
-ai-fc image.jpg -o result.json
+ai-fc path/to/image.jpg
 ```
 
-### 출력 예시
+### Save Results to File
+
+Analyze image and save results as JSON:
+```bash
+ai-fc path/to/image.jpg --output result.json
+```
+
+### Batch Processing
+
+Process all images in a directory:
+```bash
+ai-fc path/to/images/ --batch
+```
+
+### Options
+
+```
+Required:
+  IMAGE_PATH          Path to image file or directory
+
+Optional:
+  --batch, -b         Process all images in directory
+  --output, -o FILE   Save results to JSON file
+```
+
+### Example Output
 
 ```json
 {
@@ -67,18 +91,17 @@ ai-fc image.jpg -o result.json
 }
 ```
 
-## 설정 옵션
+## Configuration
 
-`Settings` 클래스에서 다음 설정을 관리합니다:
+Settings are managed in the `Settings` class:
+- `OPENAI_API_KEY`: OpenAI API key
+- `MODEL`: OpenAI model to use (default: gpt-4o-mini) ([reference](https://platform.openai.com/docs/models))
+- `TEMP_DIRECTORY`: Temporary file storage path (default: tmp)
+- `IMG_THRESHOLD`: Maximum image pixel size (default: 512) ([reference](https://platform.openai.com/docs/guides/vision))
+- `LOG_LEVEL`: Logging level (default: INFO)
+- `BATCH_SIZE`: Batch processing size (default: 10)
 
-- `OPENAI_API_KEY`: OpenAI API 키
-- `MODEL`: 사용할 OpenAI 모델 (기본값: gpt-4o-mini) ([참고](https://platform.openai.com/docs/models))
-- `TEMP_DIRECTORY`: 임시 파일 저장 경로 (기본값: tmp)
-- `IMG_THRESHOLD`: 이미지 최대 픽셀 크기 (기본값: 512) ([참고](https://platform.openai.com/docs/guides/vision))
-- `LOG_LEVEL`: 로깅 레벨 (기본값: INFO)
-- `BATCH_SIZE`: 배치 처리 크기 (기본값: 10)
+## Notes
 
-## 참고사항
-
-- 이미지 처리 후 임시 파일은 자동으로 삭제됩니다.
-- OpenAI 모델별로 API 호출 비용에 차이가 있습니다. ([참고](https://platform.openai.com/docs/pricing))
+- Temporary files are automatically deleted after image processing
+- API costs vary by OpenAI model ([reference](https://platform.openai.com/docs/pricing))

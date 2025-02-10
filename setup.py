@@ -23,7 +23,7 @@ setup(
     },
     author="23tae",
     author_email="taehoonkim.dev@gmail.com",
-    description="AI-powered clothing image classifier using OpenAI API",
+    description="AI-based clothing image classifier using OpenAI API",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/23tae/ai-fashion-classifier",

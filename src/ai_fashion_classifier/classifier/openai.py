@@ -97,7 +97,13 @@ class OpenAIClassifier:
 
             result = json.loads(response.choices[0].message.content)
             self._validate_response(result)
-            return result
+
+            final_result = {
+                "image_path": str(image_path),
+                **result
+            }
+
+            return final_result
 
         except Exception as e:
             raise APIError(f"Error classifying image: {str(e)}")

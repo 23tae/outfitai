@@ -4,11 +4,11 @@
 - [Configuration](#configuration)
 - [Notes](#notes)
 
-# Description
+## Description
 
 AI Fashion Classifier is AI-based clothing image classification tool using OpenAI API. The tool analyzes clothing images and outputs color, category, dress code, and seasonal information in JSON format.
 
-## Features
+### Features
 
 - Image classification (color, category, dress code, season)
 - Both CLI and library usage support
@@ -16,26 +16,26 @@ AI Fashion Classifier is AI-based clothing image classification tool using OpenA
 - Performance optimization through async processing
 - Flexible configuration management
 
-### Classification Criteria
+#### Classification Criteria
 
 - **Color**: Primary color as a HEX code (e.g. #FF0000)
 - **Category**: top, bottom, outer, dress, footwear, bag, accessory, other
 - **Dress code**: casual, business, party, sports, formal, other
 - **Season**: spring, summer, fall, winter
 
-## Requirements
+### Requirements
 
 - Python 3
 
-# Installation
+## Installation
 
-## 1. Install from PyPI (Recommended)
+### 1. Install from PyPI (Recommended)
 
 ```bash
 pip install ai-fashion-classifier
 ```
 
-## 2. Install from source
+### 2. Install from source
 
 ```bash
 # Clone repository
@@ -46,12 +46,12 @@ cd ai-fashion-classifier
 pip install -e .
 ```
 
-# Usage
+## Usage
 
 - [Set OpenAPI Key](#setting-openai-api-key) before use.
 - Supported image file formats: PNG (.png), JPEG (.jpeg and .jpg), WEBP (.webp) and non-animated GIF(.gif)
 
-## 1. As a Library
+### 1. As a Library
 
 You can use AI Fashion Classifier in your Python code:
 
@@ -90,7 +90,7 @@ asyncio.run(process_single())
 asyncio.run(process_batch())
 ```
 
-## 2. Command Line Interface
+### 2. Command Line Interface
 
 Process a single image and display results:
 ```bash
@@ -107,7 +107,7 @@ Process all images in a directory:
 ai-fc path/to/images/ --batch
 ```
 
-### CLI Options
+#### CLI Options
 
 ```
 Required:
@@ -118,20 +118,23 @@ Optional:
   --output, -o FILE   Save results to JSON file
 ```
 
-## Example Output
+### Example Output
 
 ```json
-{
-  "color": "#FF0000",
-  "category": "outer",
-  "dresscode": "formal",
-  "season": ["fall", "winter"]
-}
+[
+  {
+    "image_path": "path/to/image.jpg",
+    "color": "#FF0000",
+    "category": "outer",
+    "dresscode": "formal",
+    "season": ["fall", "winter"]
+  }
+]
 ```
 
-# Configuration
+## Configuration
 
-## Setting OpenAI API Key
+### Setting OpenAI API Key
 
 1. Environment variable (Recommended):
     ```bash
@@ -154,7 +157,7 @@ Optional:
     classifier = OpenAIClassifier(settings)
     ```
 
-## Available Settings
+### Available Settings
 
 All settings can be configured through environment variables, `.env` file, or in code:
 
@@ -176,7 +179,7 @@ settings = Settings(
 classifier = OpenAIClassifier(settings)
 ```
 
-# Notes
+## Notes
 
 - API costs vary by OpenAI model ([reference](https://platform.openai.com/docs/pricing))
 - When using as a library, remember that the classifier methods are asynchronous

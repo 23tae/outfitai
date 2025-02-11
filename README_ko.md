@@ -4,11 +4,11 @@
 - [설정 관리](#설정-관리)
 - [참고 사항](#참고-사항)
 
-# 개요
+## 개요
 
 AI Fashion Classifier는 OpenAI API를 사용한 AI 기반 의류 이미지 분류 도구입니다. 의류 이미지를 분석하여 색상, 카테고리, 드레스 코드, 계절 정보를 JSON 형태로 출력합니다.
 
-## 주요 기능
+### 주요 기능
 
 - 이미지 분류(색상, 카테고리, 드레스 코드, 계절)
 - CLI 및 라이브러리 형태로 사용 가능
@@ -16,26 +16,26 @@ AI Fashion Classifier는 OpenAI API를 사용한 AI 기반 의류 이미지 분�
 - 비동기 처리를 통한 성능 최적화
 - 유연한 설정 관리
 
-### 분류 항목
+#### 분류 항목
 
 - **Color**: 주요 색상 (ex. #FF0000)
 - **Category**: top, bottom, outer, dress, footwear, bag, accessory, other
 - **Dress code**: casual, business, party, sports, formal, other
 - **Season**: spring, summer, fall, winter
 
-## 시스템 요구사항
+### 시스템 요구사항
 
 - Python 3
 
-# 설치 방법
+## 설치 방법
 
-## 1. PyPI를 통한 설치 (권장)
+### 1. PyPI를 통한 설치 (권장)
 
 ```bash
 pip install ai-fashion-classifier
 ```
 
-## 2. 소스코드를 통한 설치
+### 2. 소스코드를 통한 설치
 
 ```bash
 # 저장소 복제
@@ -46,12 +46,12 @@ cd ai-fashion-classifier
 pip install -e .
 ```
 
-# 사용 방법
+## 사용 방법
 
 - 사용 전 [OpenAPI 키 설정](#openai-api-키-설정-방법)이 필요합니다.
 - 지원하는 이미지 파일 형식: PNG (.png), JPEG (.jpeg and .jpg), WEBP (.webp), non-animated GIF(.gif)
 
-## 1. 라이브러리로 사용
+### 1. 라이브러리로 사용
 
 Python 코드에서 다음과 같이 사용할 수 있습니다:
 
@@ -90,7 +90,7 @@ asyncio.run(process_single())
 asyncio.run(process_batch())
 ```
 
-## 2. CLI
+### 2. CLI 사용
 
 단일 이미지 처리:
 ```bash
@@ -107,7 +107,7 @@ ai-fc path/to/image.jpg --output results.json
 ai-fc path/to/images/ --batch
 ```
 
-### CLI 옵션
+#### CLI 옵션
 
 ```
 필수:
@@ -118,20 +118,23 @@ ai-fc path/to/images/ --batch
   --output, -o FILE   결과를 JSON 형식으로 저장
 ```
 
-## 출력 예시
+### 출력 예시
 
 ```json
-{
-  "color": "#FF0000",
-  "category": "outer",
-  "dresscode": "formal",
-  "season": ["fall", "winter"]
-}
+[
+  {
+    "image_path": "path/to/image.jpg",
+    "color": "#FF0000",
+    "category": "outer",
+    "dresscode": "formal",
+    "season": ["fall", "winter"]
+  }
+]
 ```
 
-# 설정 관리
+## 설정 관리
 
-## OpenAI API 키 설정 방법
+### OpenAI API 키 설정 방법
 
 1. 환경 변수 사용 (권장):
     ```bash
@@ -154,7 +157,7 @@ ai-fc path/to/images/ --batch
     classifier = OpenAIClassifier(settings)
     ```
 
-## 설정 가능한 옵션
+### 설정 가능한 옵션
 
 모든 설정은 환경 변수, `.env` 파일, 또는 코드에서 직접 설정할 수 있습니다:
 
@@ -176,7 +179,7 @@ settings = Settings(
 classifier = OpenAIClassifier(settings)
 ```
 
-# 참고 사항
+## 참고 사항
 
 - OpenAI 모델별로 API 호출 비용에 차이가 있습니다 ([참고](https://platform.openai.com/docs/pricing))
 - 라이브러리로 사용시 메서드가 비동기(async)임을 유의바랍니다

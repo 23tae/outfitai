@@ -1,16 +1,12 @@
-from functools import lru_cache
 from pydantic_settings import BaseSettings
-from typing import Optional
 
 
 class Settings(BaseSettings):
     OPENAI_API_KEY: str
     OPENAI_MODEL: str = "gpt-4o-mini"
     OPENAI_MAX_TOKENS: int = 300
-    TEMP_DIRECTORY: str = "tmp"
-    IMG_THRESHOLD: int = 512
-    LOG_LEVEL: str = "INFO"
     BATCH_SIZE: int = 10
+    LOG_LEVEL: str = "INFO"
 
     class Config:
         env_file = ".env"

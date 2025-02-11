@@ -10,7 +10,7 @@ import asyncio
 @click.option('--batch', '-b', is_flag=True, help='Process multiple images')
 @click.option('--output', '-o', type=click.Path(), help='Output file path')
 def cli(image_path: str, batch: bool, output: str):
-    """Classify clothes in images."""
+    """Classify clothing items in images."""
     try:
         classifier = OpenAIClassifier()
 

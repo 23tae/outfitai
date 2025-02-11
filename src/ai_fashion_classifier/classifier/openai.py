@@ -68,8 +68,8 @@ class OpenAIClassifier:
             Dictionary containing classification results
         """
         try:
-            processed_path = await self.image_processor.process_image(str(image_path))
-            encoded_image = self.image_processor.encode_image(processed_path)
+            self.image_processor.check_image_file(str(image_path))
+            encoded_image = self.image_processor.encode_image(str(image_path))
 
             response = await self.client.chat.completions.create(
                 model=self.settings.OPENAI_MODEL,
@@ -77,10 +77,13 @@ class OpenAIClassifier:
                     {
                         "role": "user",
                         "content": [
-                            {"type": "text", "text": self.prompt_text},
+                            {
+                                "type": "text",
+                                "text": self.prompt_text},
                             {
                                 "type": "image_url",
-                                "image_url": {
+                                "image_url":
+                                {
                                     "url": f"data:image/jpeg;base64,{encoded_image}",
                                     "detail": "low"
                                 },
@@ -122,7 +125,7 @@ class OpenAIClassifier:
             if path.is_dir():
                 image_paths = [
                     p for p in path.glob("*")
-                    if p.suffix.lower() in ['.jpg', '.jpeg', '.png']
+                    if p.suffix.lower() in ['.jpg', '.jpeg', '.png', '.webp', 'gif']
                 ]
             else:
                 raise ValueError(

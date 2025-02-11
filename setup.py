@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="ai_fashion_classifier",
-    version="0.1.2",
+    version="0.1.3",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     python_requires=">=3.8",
@@ -12,7 +12,6 @@ setup(
         "pydantic>=2.10.0",
         "pydantic-settings>=2.7.0",
         "click>=8.1.0",
-        "python-dotenv>=1.0.0",
         "aiofiles>=24.1.0",
         "asyncio>=3.4.3"
     ],

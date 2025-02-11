@@ -1,46 +1,57 @@
-# AI Fashion Classifier
+- [Description](#description)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Notes](#notes)
 
-AI-based clothing image classification tool using OpenAI API. The tool analyzes clothing images and outputs color, category, dress code, and seasonal information in JSON format.
+# Description
+
+AI Fashion Classifier is AI-based clothing image classification tool using OpenAI API. The tool analyzes clothing images and outputs color, category, dress code, and seasonal information in JSON format.
 
 ## Features
 
 - Image classification (color, category, dress code, season)
-- Image size optimization
 - Both CLI and library usage support
 - Single image and batch processing support
 - Performance optimization through async processing
 - Flexible configuration management
 
+### Classification Criteria
+
+- **Color**: Primary color as a HEX code (e.g. #FF0000)
+- **Category**: top, bottom, outer, dress, footwear, bag, accessory, other
+- **Dress code**: casual, business, party, sports, formal, other
+- **Season**: spring, summer, fall, winter
+
 ## Requirements
 
 - Python 3
 
-## Installation
+# Installation
 
-### 1. Install from PyPI (Recommended)
+## 1. Install from PyPI (Recommended)
 
 ```bash
 pip install ai-fashion-classifier
 ```
 
-### 2. Install from source
+## 2. Install from source
 
 ```bash
 # Clone repository
 git clone https://github.com/23tae/ai-fashion-classifier.git
 cd ai-fashion-classifier
 
-# Create and activate virtual environment
-python3 -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-
 # Install package
 pip install -e .
 ```
 
-## Usage
+# Usage
 
-### 1. As a Library
+- [Set OpenAPI Key](#setting-openai-api-key) before use.
+- Supported image file formats: PNG (.png), JPEG (.jpeg and .jpg), WEBP (.webp) and non-animated GIF(.gif)
+
+## 1. As a Library
 
 You can use AI Fashion Classifier in your Python code:
 
@@ -79,7 +90,7 @@ asyncio.run(process_single())
 asyncio.run(process_batch())
 ```
 
-### 2. Command Line Interface
+## 2. Command Line Interface
 
 Process a single image and display results:
 ```bash
@@ -107,7 +118,7 @@ Optional:
   --output, -o FILE   Save results to JSON file
 ```
 
-### Example Output
+## Example Output
 
 ```json
 {
@@ -118,9 +129,9 @@ Optional:
 }
 ```
 
-## Configuration
+# Configuration
 
-### Setting OpenAI API Key
+## Setting OpenAI API Key
 
 1. Environment variable (Recommended):
     ```bash
@@ -143,7 +154,7 @@ Optional:
     classifier = OpenAIClassifier(settings)
     ```
 
-### Available Settings
+## Available Settings
 
 All settings can be configured through environment variables, `.env` file, or in code:
 
@@ -151,10 +162,8 @@ All settings can be configured through environment variables, `.env` file, or in
   - `OPENAI_API_KEY`: **OpenAI API key**
 - Optional:
   - `OPENAI_MODEL`: OpenAI model to use (default: gpt-4o-mini) ([reference](https://platform.openai.com/docs/models))
-  - `TEMP_DIRECTORY`: Temporary file storage path (default: tmp)
-  - `IMG_THRESHOLD`: Maximum image pixel size (default: 512) ([reference](https://platform.openai.com/docs/guides/vision))
-  - `LOG_LEVEL`: Logging level (default: INFO)
   - `BATCH_SIZE`: Batch processing size (default: 10)
+  - `LOG_LEVEL`: Logging level (default: INFO)
 
 Example of using custom settings:
 ```python
@@ -167,9 +176,8 @@ settings = Settings(
 classifier = OpenAIClassifier(settings)
 ```
 
-## Notes
+# Notes
 
 - API costs vary by OpenAI model ([reference](https://platform.openai.com/docs/pricing))
 - When using as a library, remember that the classifier methods are asynchronous
-- The library automatically handles image resizing and optimization
-- Temporary files are automatically deleted after image processing
+- The library automatically handles image size optimization

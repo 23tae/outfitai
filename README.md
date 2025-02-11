@@ -6,7 +6,7 @@
 
 ## Description
 
-AI Fashion Classifier is AI-based clothing image classification tool using OpenAI API. The tool analyzes clothing images and outputs color, category, dress code, and seasonal information in JSON format.
+AI-based clothing image classification tool using OpenAI API. The tool analyzes clothing images and outputs color, category, dress code, and seasonal information in JSON format.
 
 ### Features
 
@@ -32,15 +32,15 @@ AI Fashion Classifier is AI-based clothing image classification tool using OpenA
 ### 1. Install from PyPI (Recommended)
 
 ```bash
-pip install ai-fashion-classifier
+pip install outfitai
 ```
 
 ### 2. Install from source
 
 ```bash
 # Clone repository
-git clone https://github.com/23tae/ai-fashion-classifier.git
-cd ai-fashion-classifier
+git clone https://github.com/23tae/outfitai.git
+cd outfitai
 
 # Install package
 pip install -e .
@@ -53,10 +53,10 @@ pip install -e .
 
 ### 1. As a Library
 
-You can use AI Fashion Classifier in your Python code:
+You can use it in your Python code:
 
 ```python
-from ai_fashion_classifier import OpenAIClassifier, Settings
+from outfitai import OpenAIClassifier, Settings
 import asyncio
 
 # Method 1: Use environment variables or .env file
@@ -94,17 +94,17 @@ asyncio.run(process_batch())
 
 Process a single image and display results:
 ```bash
-ai-fc path/to/image.jpg
+outfitai path/to/image.jpg
 ```
 
 Save results to file:
 ```bash
-ai-fc path/to/image.jpg --output result.json
+outfitai path/to/image.jpg --output result.json
 ```
 
 Process all images in a directory:
 ```bash
-ai-fc path/to/images/ --batch
+outfitai path/to/images/ --batch
 ```
 
 #### CLI Options

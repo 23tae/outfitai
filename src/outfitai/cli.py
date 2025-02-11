@@ -1,7 +1,7 @@
 import click
 from pathlib import Path
 import json
-from .classifier.openai import OpenAIClassifier
+from .classifier.openai_classifier import OpenAIClassifier
 import asyncio
 
 

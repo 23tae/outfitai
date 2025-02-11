@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="ai_fashion_classifier",
-    version="0.1.4",
+    name="outfitai",
+    version="0.2.0",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     python_requires=">=3.8",
@@ -17,15 +17,15 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'ai-fc=ai_fashion_classifier.__main__:main',
+            'outfitai=outfitai.__main__:main',
         ],
     },
     author="23tae",
     author_email="taehoonkim.dev@gmail.com",
-    description="AI-based clothing image classifier using OpenAI API",
+    description="AI-based clothing image classification tool",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/23tae/ai-fashion-classifier",
+    url="https://github.com/23tae/outfitai",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

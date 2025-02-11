@@ -5,7 +5,7 @@ import asyncio
 from pathlib import Path
 from ..error.exceptions import APIError, ValidationError
 from ..utils.logger import Logger
-from ..utils.utils import ImageProcessor
+from ..utils.image_processor import ImageProcessor
 from ..config.settings import Settings
 
 

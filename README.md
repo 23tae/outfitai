@@ -25,7 +25,7 @@ AI-based clothing image classification tool using OpenAI API. The tool analyzes 
 
 ### Requirements
 
-- Python 3
+- Python 3.8+
 
 ## Installation
 

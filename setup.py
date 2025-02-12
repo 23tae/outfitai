@@ -2,10 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
     name="outfitai",
-    version="0.2.2",
-    author="23tae",
-    author_email="taehoonkim.dev@gmail.com",
-    license="MIT",
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     python_requires=">=3.8",
@@ -27,6 +25,9 @@ setup(
     project_urls={
         "Source": "https://github.com/23tae/outfitai",
     },
+    author="23tae",
+    author_email="taehoonkim.dev@gmail.com",
+    license="MIT",
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",

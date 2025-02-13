@@ -44,10 +44,10 @@ class ClassifierFactory:
 
             # Get the appropriate classifier class
             classifier_class = cls._classifiers.get(
-                settings.OUTFITAI_API_PROVIDER.lower())
+                settings.OUTFITAI_PROVIDER.lower())
             if not classifier_class:
                 raise ValueError(
-                    f"Invalid API provider: {settings.OUTFITAI_API_PROVIDER}. "
+                    f"Invalid API provider: {settings.OUTFITAI_PROVIDER}. "
                     f"Must be one of: {', '.join(cls._classifiers.keys())}"
                 )
 

@@ -5,7 +5,7 @@ from pydantic import validator
 
 class Settings(BaseSettings):
     # API Configuration
-    OUTFITAI_API_PROVIDER: str = "openai"
+    OUTFITAI_PROVIDER: str = "openai"
     OPENAI_API_KEY: Optional[str] = None
     GEMINI_API_KEY: Optional[str] = None
 
@@ -24,11 +24,11 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
 
-    @validator('OUTFITAI_API_PROVIDER')
+    @validator('OUTFITAI_PROVIDER')
     def validate_provider(cls, v):
         if v not in ['openai', 'gemini']:
             raise ValueError(
-                'OUTFITAI_API_PROVIDER must be either "openai" or "gemini"')
+                'OUTFITAI_PROVIDER must be either "openai" or "gemini"')
         return v
 
     def __init__(self, **kwargs):
@@ -37,11 +37,11 @@ class Settings(BaseSettings):
 
     def _validate_api_keys(self):
         """Validate that the appropriate API key is available."""
-        if self.OUTFITAI_API_PROVIDER == 'openai' and not self.OPENAI_API_KEY:
+        if self.OUTFITAI_PROVIDER == 'openai' and not self.OPENAI_API_KEY:
             raise ValueError(
                 "OPENAI_API_KEY must be provided when using OpenAI provider"
             )
-        elif self.OUTFITAI_API_PROVIDER == 'gemini' and not self.GEMINI_API_KEY:
+        elif self.OUTFITAI_PROVIDER == 'gemini' and not self.GEMINI_API_KEY:
             raise ValueError(
                 "GEMINI_API_KEY must be provided when using Gemini provider"
             )

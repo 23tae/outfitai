@@ -83,7 +83,7 @@ class ImageProcessor:
     def _is_supported_extension(self, image_path: Path) -> bool:
         """Checks if the image file extension is supported."""
         extension = image_path.suffix.lower()
-        if extension == ".gif" and not self.settings.OUTFITAI_API_PROVIDER == "openai":
+        if extension == ".gif" and not self.settings.OUTFITAI_PROVIDER == "openai":
             return False
         return extension in self.SUPPORTED_EXTENSIONS
 

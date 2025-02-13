@@ -26,6 +26,8 @@ class Settings(BaseSettings):
 
     @validator('OUTFITAI_PROVIDER')
     def validate_provider(cls, v):
+        if v == '':
+            return 'openai'
         if v not in ['openai', 'gemini']:
             raise ValueError(
                 'OUTFITAI_PROVIDER must be either "openai" or "gemini"')

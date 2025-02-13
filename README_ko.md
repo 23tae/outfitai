@@ -85,7 +85,6 @@ classifier = ClassifierFactory.create_classifier(settings)
 classifier = ClassifierFactory.create_classifier({
     "OUTFITAI_PROVIDER": "openai",
     "OPENAI_API_KEY": "your-api-key",
-    "BATCH_SIZE": 5
 })
 
 # 단일 이미지 처리
@@ -207,14 +206,12 @@ outfitai path/to/images/ --batch
 모든 설정은 환경 변수, `.env` 파일, 또는 코드에서 직접 설정할 수 있습니다:
 
 - 필수 사항:
-  - `OUTFITAI_PROVIDER`: 사용할 API 제공자 ("openai" 또는 "gemini")
-  - `OPENAI_API_KEY`: OpenAI API 키 (OpenAI 사용 시 필수)
-  - `GEMINI_API_KEY`: Gemini API 키 (Gemini 사용 시 필수)
+  - `OPENAI_API_KEY`: OpenAI API 키 (OpenAI 사용 시)
+  - `GEMINI_API_KEY`: Gemini API 키 (Gemini 사용 시)
 - 선택 사항:
+  - `OUTFITAI_PROVIDER`: 사용할 API 제공자 ("openai" 또는 "gemini")
   - `OPENAI_MODEL`: 사용할 OpenAI 모델 (기본값: gpt-4o-mini)
   - `GEMINI_MODEL`: 사용할 Gemini 모델 (기본값: gemini-2.0-flash)
-  - `BATCH_SIZE`: 배치 처리 크기 (기본값: 10)
-  - `LOG_LEVEL`: 로깅 레벨 (기본값: INFO)
 
 커스텀 설정 예시:
 ```python
@@ -222,8 +219,6 @@ settings = Settings(
     OUTFITAI_PROVIDER="gemini",
     GEMINI_API_KEY="your-api-key",
     GEMINI_MODEL="gemini-2.0-flash",
-    BATCH_SIZE=5,
-    LOG_LEVEL="DEBUG"
 )
 classifier = ClassifierFactory.create_classifier(settings)
 ```

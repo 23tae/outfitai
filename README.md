@@ -85,7 +85,6 @@ classifier = ClassifierFactory.create_classifier(settings)
 classifier = ClassifierFactory.create_classifier({
     "OUTFITAI_PROVIDER": "openai",
     "OPENAI_API_KEY": "your-api-key",
-    "BATCH_SIZE": 5
 })
 
 # Process single image
@@ -207,14 +206,12 @@ Optional:
 All settings can be configured through environment variables, `.env` file, or in code:
 
 - Required:
-  - `OUTFITAI_PROVIDER`: API provider to use ("openai" or "gemini")
   - `OPENAI_API_KEY`: OpenAI API key (required when using OpenAI)
   - `GEMINI_API_KEY`: Gemini API key (required when using Gemini)
 - Optional:
+  - `OUTFITAI_PROVIDER`: API provider to use ("openai" or "gemini") (default: openai)
   - `OPENAI_MODEL`: OpenAI model to use (default: gpt-4o-mini)
   - `GEMINI_MODEL`: Gemini model to use (default: gemini-2.0-flash)
-  - `BATCH_SIZE`: Batch processing size (default: 10)
-  - `LOG_LEVEL`: Logging level (default: INFO)
 
 Example of using custom settings:
 ```python
@@ -222,8 +219,6 @@ settings = Settings(
     OUTFITAI_PROVIDER="gemini",
     GEMINI_API_KEY="your-api-key",
     GEMINI_MODEL="gemini-2.0-flash",
-    BATCH_SIZE=5,
-    LOG_LEVEL="DEBUG"
 )
 classifier = ClassifierFactory.create_classifier(settings)
 ```

@@ -1,7 +1,7 @@
 from PIL import Image, UnidentifiedImageError, ImageFile
 from pathlib import Path
 import base64
-from typing import Optional, Set, Final
+from typing import Optional, Set, Final, Union
 from functools import lru_cache
 from ..error.exceptions import ImageProcessingError
 from ..config.settings import Settings
@@ -16,7 +16,7 @@ class ImageProcessor:
         self.settings = settings or Settings()
         self.logger = Logger(self.settings).setup_logger(__name__)
 
-    def check_image_file(self, image_path: str | Path) -> None:
+    def check_image_file(self, image_path: Union[str, Path]) -> None:
         """
         Validates if the image file is supported and can be processed.
 
@@ -41,7 +41,7 @@ class ImageProcessor:
             raise ImageProcessingError(f"Failed to process image: {str(e)}")
 
     @lru_cache(maxsize=20)
-    def encode_image(self, image_path: str | Path) -> str:
+    def encode_image(self, image_path: Union[str, Path]) -> str:
         """
         Encodes image to base64 string with caching.
 
@@ -61,7 +61,7 @@ class ImageProcessor:
             raise ImageProcessingError(f"Failed to encode image: {str(e)}")
 
     @lru_cache(maxsize=10)
-    def load_image(self, image_path: str | Path) -> ImageFile:
+    def load_image(self, image_path: Union[str, Path]) -> ImageFile:
         """
         Loads and returns a copy of the image with caching.
 

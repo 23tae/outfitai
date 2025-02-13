@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic_settings import BaseSettings
-from pydantic import validator
+from pydantic import field_validator, FieldValidationInfo
 
 
 class Settings(BaseSettings):
@@ -24,8 +24,9 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
 
-    @validator('OUTFITAI_PROVIDER')
-    def validate_provider(cls, v):
+    @field_validator('OUTFITAI_PROVIDER')
+    @classmethod
+    def validate_provider(cls, v: str, info: FieldValidationInfo) -> str:
         if v == '':
             return 'openai'
         if v not in ['openai', 'gemini']:

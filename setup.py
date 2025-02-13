@@ -6,13 +6,15 @@ setup(
     setup_requires=['setuptools_scm'],
     packages=find_packages(where="src"),
     package_dir={"": "src"},
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     install_requires=[
         "openai>=1.61.0",
         "pillow",
         "pydantic-settings>=2.7.0",
         "click>=8.1.0",
-        "asyncio>=3.4.3"
+        "asyncio>=3.4.0",
+        "google-genai>=1.2.0",
+        "pydantic>=2.10.0",
     ],
     entry_points={
         'console_scripts': [

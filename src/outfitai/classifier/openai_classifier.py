@@ -1,15 +1,13 @@
 import openai
 import json
-from typing import Dict, List, Any, Optional, Union
-import asyncio
+from typing import Dict, Any, Optional, Union
 from pathlib import Path
 from ..error.exceptions import APIError, ValidationError
-from ..utils.logger import Logger
-from ..utils.image_processor import ImageProcessor
+from .base import BaseClassifier
 from ..config.settings import Settings
 
 
-class OpenAIClassifier:
+class OpenAIClassifier(BaseClassifier):
     def __init__(self, settings: Optional[Union[Settings, dict]] = None):
         """
         Initialize OpenAI classifier with optional settings.
@@ -19,32 +17,17 @@ class OpenAIClassifier:
         """
         try:
             if isinstance(settings, dict):
-                self.settings = Settings.from_dict(settings)
-            elif isinstance(settings, Settings):
-                self.settings = settings
-            else:
-                self.settings = Settings()
+                settings = Settings.from_dict(settings)
+            elif settings is None:
+                settings = Settings()
+
+            super().__init__(settings)
+            self.client = openai.AsyncOpenAI(
+                api_key=self.settings.OPENAI_API_KEY)
+            self.prompt_text = self._create_prompt()
+
         except ValueError as e:
             raise ValueError(str(e)) from e
-
-        logger_manager = Logger(self.settings)
-        self.logger = logger_manager.setup_logger(__name__)
-        self.client = openai.AsyncOpenAI(api_key=self.settings.OPENAI_API_KEY)
-        self.image_processor = ImageProcessor(self.settings)
-        self._init_constants()
-
-    def _init_constants(self):
-        """Initialize constant values used in classification."""
-        self.category_values = [
-            "top", "bottom", "outer", "dress",
-            "footwear", "bag", "accessory", "other"
-        ]
-        self.dresscode_values = [
-            "casual", "business", "party",
-            "sports", "formal", "other"
-        ]
-        self.season_values = ["spring", "summer", "fall", "winter"]
-        self.prompt_text = self._create_prompt()
 
     def _create_prompt(self) -> str:
         """Create the prompt for the OpenAI API."""
@@ -79,11 +62,11 @@ class OpenAIClassifier:
                         "content": [
                             {
                                 "type": "text",
-                                "text": self.prompt_text},
+                                "text": self.prompt_text
+                            },
                             {
                                 "type": "image_url",
-                                "image_url":
-                                {
+                                "image_url": {
                                     "url": f"data:image/jpeg;base64,{encoded_image}",
                                     "detail": "low"
                                 },
@@ -98,65 +81,24 @@ class OpenAIClassifier:
             result = json.loads(response.choices[0].message.content)
             self._validate_response(result)
 
-            final_result = {
+            return {
                 "image_path": str(image_path),
                 **result
             }
 
-            return final_result
-
         except Exception as e:
             raise APIError(f"Error classifying image: {str(e)}")
 
-    async def classify_batch(
-        self,
-        image_paths: Union[str, Path, List[Union[str, Path]]],
-        batch_size: Optional[int] = None
-    ) -> List[Dict[str, Any]]:
+    def _validate_response(self, data: Dict[str, Any]) -> None:
         """
-        Classify multiple clothing items in batches.
+        Validate the API response format and values.
 
         Args:
-            image_paths: Directory path or list of image paths
-            batch_size: Optional batch size for processing
+            data: Response data to validate
 
-        Returns:
-            List of dictionaries containing classification results
+        Raises:
+            ValidationError: If the response format is invalid
         """
-        batch_size = batch_size or self.settings.BATCH_SIZE
-
-        # Handle directory input
-        if isinstance(image_paths, (str, Path)):
-            path = Path(image_paths)
-            if path.is_dir():
-                image_paths = [
-                    p for p in path.glob("*")
-                    if p.suffix.lower() in ['.jpg', '.jpeg', '.png', '.webp', 'gif']
-                ]
-            else:
-                raise ValueError(
-                    "When providing a single path, it must be a directory")
-
-        image_paths = [str(path) for path in image_paths]
-        results = []
-
-        for i in range(0, len(image_paths), batch_size):
-            batch = image_paths[i:i + batch_size]
-            tasks = [self.classify_single(path) for path in batch]
-            batch_results = await asyncio.gather(*tasks, return_exceptions=True)
-
-            for result in batch_results:
-                if isinstance(result, Exception):
-                    self.logger.error(
-                        f"Error in batch processing: {str(result)}")
-                    results.append({"error": str(result)})
-                else:
-                    results.append(result)
-
-        return results
-
-    def _validate_response(self, data: Dict[str, Any]):
-        """Validate the API response format and values."""
         required_keys = ["color", "category", "dresscode", "season"]
 
         # Check required keys

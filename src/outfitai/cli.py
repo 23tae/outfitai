@@ -45,7 +45,7 @@ def save_results(results: list, output_path: Optional[str]) -> None:
 
 @click.group()
 def cli():
-    """OutfitAI - AI-powered clothing classification tool"""
+    """OutfitAI: AI-based clothing image classification tool."""
     pass
 
 

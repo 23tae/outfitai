@@ -1,22 +1,50 @@
+from typing import Optional
 from pydantic_settings import BaseSettings
+from pydantic import validator
 
 
 class Settings(BaseSettings):
-    OPENAI_API_KEY: str
+    # API Configuration
+    OUTFITAI_PROVIDER: str = "openai"
+    OPENAI_API_KEY: Optional[str] = None
+    GEMINI_API_KEY: Optional[str] = None
+
+    # OpenAI specific settings
     OPENAI_MODEL: str = "gpt-4o-mini"
     OPENAI_MAX_TOKENS: int = 300
+
+    # Gemini specific settings
+    GEMINI_MODEL: str = "gemini-2.0-flash"
+
+    # Common settings
     BATCH_SIZE: int = 10
     LOG_LEVEL: str = "INFO"
 
     class Config:
         env_file = ".env"
+        env_file_encoding = "utf-8"
+
+    @validator('OUTFITAI_PROVIDER')
+    def validate_provider(cls, v):
+        if v not in ['openai', 'gemini']:
+            raise ValueError(
+                'OUTFITAI_PROVIDER must be either "openai" or "gemini"')
+        return v
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        if self.OPENAI_API_KEY is None:
+        self._validate_api_keys()
+
+    def _validate_api_keys(self):
+        """Validate that the appropriate API key is available."""
+        if self.OUTFITAI_PROVIDER == 'openai' and not self.OPENAI_API_KEY:
             raise ValueError(
-                "OPENAI_API_KEY must be provided either through environment variables, "
-                ".env file, or directly to the constructor")
+                "OPENAI_API_KEY must be provided when using OpenAI provider"
+            )
+        elif self.OUTFITAI_PROVIDER == 'gemini' and not self.GEMINI_API_KEY:
+            raise ValueError(
+                "GEMINI_API_KEY must be provided when using Gemini provider"
+            )
 
     @classmethod
     def from_dict(cls, settings_dict: dict) -> 'Settings':

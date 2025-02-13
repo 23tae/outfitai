@@ -1,4 +1,4 @@
-from .classifier.openai_classifier import OpenAIClassifier
 from .config.settings import Settings
+from .classifier.factory import ClassifierFactory
 
-__all__ = ['OpenAIClassifier', 'Settings']
+__all__ = ['Settings', 'ClassifierFactory']

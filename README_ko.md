@@ -52,7 +52,7 @@ pip install -e .
 
 ## 사용 방법
 
-- 사용 전 API 정보 설정이 필요합니다 ([설정 관리](#설정-관리) 참조)
+- 사용 전 API 정보 설정이 필요합니다 ([설정 관리](#설정-관리) 참고)
 - 지원하는 이미지 파일 형식:
   - OpenAI: PNG(.png), JPEG(.jpeg, .jpg), WEBP(.webp), non-animated GIF(.gif)
   - Gemini: PNG(.png), JPEG(.jpeg, .jpg), WEBP(.webp)
@@ -68,33 +68,21 @@ import asyncio
 # 방법 1: 환경 변수나 .env 파일 사용
 classifier = ClassifierFactory.create_classifier()
 
-# 방법 2-1: 직접 설정 (OpenAI)
+# 방법 2: 직접 설정
 settings = Settings(
     OUTFITAI_PROVIDER="openai",
     OPENAI_API_KEY="your-api-key"
 )
-classifier = ClassifierFactory.create_classifier(settings)
 
-# 방법 2-2: 직접 설정 (Gemini)
-settings = Settings(
-    OUTFITAI_PROVIDER="gemini",
-    GEMINI_API_KEY="your-api-key"
-)
 classifier = ClassifierFactory.create_classifier(settings)
-
-# 방법 3: 딕셔너리로 설정
-classifier = ClassifierFactory.create_classifier({
-    "OUTFITAI_PROVIDER": "openai",
-    "OPENAI_API_KEY": "your-api-key",
-})
 
 # 단일 이미지 처리
 async def process_single():
-  # 로컬 이미지 사용
+  # 방법 1: 로컬 이미지 사용
     result = await classifier.classify_single("path/to/image.jpg")
     print(result)
 
-  # 이미지 URL 사용
+  # 방법 2: 이미지 URL 사용
     result = await classifier.classify_single("https://example.com/image.jpg")
     print(result)
 
@@ -145,10 +133,10 @@ outfitai path/to/images/ --batch
 [
   {
     "image_path": "path/to/image.jpg",
-    "color": "#FF0000",
-    "category": "outer",
-    "dresscode": "formal",
-    "season": ["fall", "winter"]
+    "color": "indigo",
+    "category": "outerwear",
+    "dress_code": "casual wear",
+    "season": ["spring", "fall"]
   }
 ]
 ```

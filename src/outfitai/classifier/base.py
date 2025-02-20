@@ -35,7 +35,7 @@ class BaseClassifier(ABC):
             "tops", "bottoms", "outerwear", "dresses",
             "shoes", "bags", "hats", "accessories", "other"
         ]
-        self.dresscode_values = [
+        self.dress_code_values = [
             "casual wear", "business attire", "campus style", "date night outfit",
             "travel wear", "wedding attire", "loungewear", "resort wear", "other"
         ]
@@ -48,7 +48,7 @@ class BaseClassifier(ABC):
         Return a JSON object with these keys:
         - 'color': 1 value from {self.color_values}
         - 'category': 1 value from {self.category_values}
-        - 'dresscode': 1 value from {self.dresscode_values}
+        - 'dress_code': 1 value from {self.dress_code_values}
         - 'season': 1+ values from {self.season_values} (array)
         """
 
@@ -62,7 +62,7 @@ class BaseClassifier(ABC):
         Raises:
             ValidationError: If the response format is invalid
         """
-        required_keys = ["color", "category", "dresscode", "season"]
+        required_keys = ["color", "category", "dress_code", "season"]
 
         # Check required keys
         for key in required_keys:
@@ -77,9 +77,9 @@ class BaseClassifier(ABC):
         if data["category"] not in self.category_values:
             raise ValidationError(f"Invalid category: {data['category']}")
 
-        # Validate dresscode
-        if data["dresscode"] not in self.dresscode_values:
-            raise ValidationError(f"Invalid dresscode: {data['dresscode']}")
+        # Validate dress_code
+        if data["dress_code"] not in self.dress_code_values:
+            raise ValidationError(f"Invalid dress_code: {data['dress_code']}")
 
         # Validate seasons
         if not isinstance(data["season"], list):

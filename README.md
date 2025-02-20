@@ -68,33 +68,21 @@ import asyncio
 # Method 1: Use environment variables or .env file
 classifier = ClassifierFactory.create_classifier()
 
-# Method 2-1: Direct settings (OpenAI)
+# Method 2: Direct settings
 settings = Settings(
     OUTFITAI_PROVIDER="openai",
     OPENAI_API_KEY="your-api-key"
 )
-classifier = ClassifierFactory.create_classifier(settings)
 
-# Method 2-2: Direct settings (Gemini)
-settings = Settings(
-    OUTFITAI_PROVIDER="gemini",
-    GEMINI_API_KEY="your-api-key"
-)
 classifier = ClassifierFactory.create_classifier(settings)
-
-# Method 3: Dictionary settings
-classifier = ClassifierFactory.create_classifier({
-    "OUTFITAI_PROVIDER": "openai",
-    "OPENAI_API_KEY": "your-api-key",
-})
 
 # Process single image
 async def process_single():
-    # From local file
+    # Method 1: From local file
     result = await classifier.classify_single("path/to/image.jpg")
     print(result)
     
-    # From URL
+    # Method 2: From URL
     result = await classifier.classify_single("https://example.com/image.jpg")
     print(result)
 
@@ -145,10 +133,10 @@ Optional:
 [
   {
     "image_path": "path/to/image.jpg",
-    "color": "#FF0000",
-    "category": "outer",
-    "dresscode": "formal",
-    "season": ["fall", "winter"]
+    "color": "indigo",
+    "category": "outerwear",
+    "dress_code": "casual wear",
+    "season": ["spring", "fall"]
   }
 ]
 ```

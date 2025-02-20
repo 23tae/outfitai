@@ -1,7 +1,7 @@
 from PIL import Image, UnidentifiedImageError, ImageFile
 from pathlib import Path
 import base64
-from typing import Optional, Set, Final, Union
+from typing import Optional, Union
 from functools import lru_cache
 from enum import Enum
 from dataclasses import dataclass

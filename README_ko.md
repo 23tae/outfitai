@@ -8,7 +8,7 @@
 
 ## 개요
 
-LLM을 사용한 AI 기반 의류 이미지 분류 도구입니다. 의류 이미지를 분석하여 색상, 카테고리, 드레스 코드, 계절 정보를 JSON 형태로 출력합니다.
+AI 기반의 의류 이미지 분류 도구입니다. 의류 이미지를 분석하여 색상, 카테고리, 드레스 코드, 계절 정보를 JSON 형태로 출력합니다.
 
 ### 주요 기능
 
@@ -18,6 +18,7 @@ LLM을 사용한 AI 기반 의류 이미지 분류 도구입니다. 의류 이�
 - 단일 이미지 및 배치 처리 지원
 - 비동기 처리를 통한 성능 최적화
 - 유연한 설정 관리
+- 로컬 이미지 및 이미지 URL 지원
 
 #### 분류 항목
 
@@ -28,11 +29,11 @@ LLM을 사용한 AI 기반 의류 이미지 분류 도구입니다. 의류 이�
 
 ### 시스템 요구사항
 
-- Python 3.8+
+- Python 3.9+
 
 ## 설치 방법
 
-### 1. PyPI를 통한 설치 (권장)
+### 1. [PyPI](https://pypi.org/project/outfitai/)를 통한 설치 (권장)
 
 ```bash
 pip install outfitai
@@ -89,7 +90,12 @@ classifier = ClassifierFactory.create_classifier({
 
 # 단일 이미지 처리
 async def process_single():
+  # 로컬 이미지 사용
     result = await classifier.classify_single("path/to/image.jpg")
+    print(result)
+
+  # 이미지 URL 사용
+    result = await classifier.classify_single("https://example.com/image.jpg")
     print(result)
 
 asyncio.run(process_single())
@@ -126,7 +132,7 @@ outfitai path/to/images/ --batch
 
 ```
 필수:
-  IMAGE_PATH          이미지 파일이나 디렉토리의 경로
+  IMAGE_PATH          이미지 파일이나 디렉토리의 경로 또는 이미지 URL
 
 선택:
   --batch, -b         디렉토리 내 모든 이미지 처리

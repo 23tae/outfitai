@@ -27,13 +27,17 @@ class BaseClassifier(ABC):
 
     def _init_constants(self):
         """Initialize constant values used in classification."""
+        self.color_values = [
+            "white", "gray", "black", "red", "orange",
+            "yellow", "green", "blue", "indigo", "purple", "other"
+        ]
         self.category_values = [
-            "top", "bottom", "outer", "dress",
-            "footwear", "bag", "accessory", "other"
+            "tops", "bottoms", "outerwear", "dresses",
+            "shoes", "bags", "hats", "accessories", "other"
         ]
         self.dresscode_values = [
-            "casual", "business casual", "campus", "date night attire",
-            "travel wear", "formal", "loungewear", "beachwear", "other"
+            "casual wear", "business attire", "campus style", "date night outfit",
+            "travel wear", "wedding attire", "loungewear", "resort wear", "other"
         ]
         self.season_values = ["spring", "summer", "fall", "winter"]
 

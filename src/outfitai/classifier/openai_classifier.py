@@ -1,7 +1,7 @@
 import openai
 import json
 from typing import Dict, Any, Optional, Union
-from pathlib import Path
+from ..utils.image_processor import ImageSource
 from ..error.exceptions import APIError, ValidationError
 from .base import BaseClassifier
 from ..config.settings import Settings
@@ -40,40 +40,34 @@ class OpenAIClassifier(BaseClassifier):
         - 'season': 1+ values from {self.season_values} (array)
         """
 
-    async def classify_single(self, image_path: Union[str, Path]) -> Dict[str, Any]:
+    async def classify_single(self, image_source: Union[str, ImageSource]) -> Dict[str, Any]:
         """
         Classify a single clothing item.
 
         Args:
-            image_path: Path to the image file
+            image_source: Path to the image file
 
         Returns:
             Dictionary containing classification results
         """
         try:
-            self.image_processor.check_image_file(str(image_path))
-            encoded_image = self.image_processor.encode_image(str(image_path))
+            image_data = await self.image_processor.process_image(image_source)
 
             response = await self.client.chat.completions.create(
                 model=self.settings.OPENAI_MODEL,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": self.prompt_text
-                            },
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": f"data:image/jpeg;base64,{encoded_image}",
-                                    "detail": "low"
-                                },
-                            },
-                        ],
-                    }
-                ],
+                messages=[{
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": self.prompt_text},
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": image_data,  # URL or base64 data URL
+                                "detail": "low"
+                            }
+                        }
+                    ]
+                }],
                 max_tokens=self.settings.OPENAI_MAX_TOKENS,
                 response_format={"type": "json_object"}
             )
@@ -82,7 +76,7 @@ class OpenAIClassifier(BaseClassifier):
             self._validate_response(result)
 
             return {
-                "image_path": str(image_path),
+                "image_path": str(image_source.path if isinstance(image_source, ImageSource) else image_source),
                 **result
             }
 

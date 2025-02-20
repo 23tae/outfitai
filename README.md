@@ -8,7 +8,7 @@
 
 ## Description
 
-AI-based clothing image classification tool using LLM. The tool analyzes clothing images and outputs color, category, dress code, and seasonal information in JSON format.
+AI-powered clothing image classification tool. The tool analyzes clothing images and outputs color, category, dress code, and seasonal information in JSON format.
 
 ### Features
 
@@ -18,6 +18,7 @@ AI-based clothing image classification tool using LLM. The tool analyzes clothin
 - Single image and batch processing support
 - Performance optimization through async processing
 - Flexible configuration management
+- Support for both local file and image URL
 
 #### Classification Criteria
 
@@ -28,11 +29,11 @@ AI-based clothing image classification tool using LLM. The tool analyzes clothin
 
 ### Requirements
 
-- Python 3.8+
+- Python 3.9+
 
 ## Installation
 
-### 1. Install from PyPI (Recommended)
+### 1. Install from [PyPI](https://pypi.org/project/outfitai/) (Recommended)
 
 ```bash
 pip install outfitai
@@ -89,7 +90,12 @@ classifier = ClassifierFactory.create_classifier({
 
 # Process single image
 async def process_single():
+    # From local file
     result = await classifier.classify_single("path/to/image.jpg")
+    print(result)
+    
+    # From URL
+    result = await classifier.classify_single("https://example.com/image.jpg")
     print(result)
 
 asyncio.run(process_single())
@@ -126,7 +132,7 @@ outfitai path/to/images/ --batch
 
 ```
 Required:
-  IMAGE_PATH          Path to image file or directory
+  IMAGE_PATH          Path to image file/directory or image URL
 
 Optional:
   --batch, -b         Process all images in directory

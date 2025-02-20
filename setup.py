@@ -21,7 +21,7 @@ setup(
             'outfitai=outfitai.__main__:main',
         ],
     },
-    description="AI-based clothing image classification tool.",
+    description="AI-powered clothing image classification tool.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     project_urls={

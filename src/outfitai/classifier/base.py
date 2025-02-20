@@ -4,7 +4,7 @@ from pathlib import Path
 import asyncio
 from ..config.settings import Settings
 from ..utils.logger import Logger
-from ..utils.image_processor import ImageProcessor
+from ..utils.image_processor import ImageProcessor, ImageSource
 
 
 class BaseClassifier(ABC):
@@ -36,12 +36,12 @@ class BaseClassifier(ABC):
         self.season_values = ["spring", "summer", "fall", "winter"]
 
     @abstractmethod
-    async def classify_single(self, image_path: Union[str, Path]) -> Dict[str, Any]:
+    async def classify_single(self, image_source: Union[str, ImageSource]) -> Dict[str, Any]:
         """
         Classify a single clothing item.
 
         Args:
-            image_path: Path to the image file
+            image_source: Path to the image file
 
         Returns:
             Dictionary containing classification results

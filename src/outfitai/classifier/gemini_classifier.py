@@ -1,8 +1,8 @@
 from google import genai
 import json
 from typing import Dict, Any, Optional, Union
-from pathlib import Path
 import re
+from ..utils.image_processor import ImageSource
 from ..error.exceptions import APIError, ValidationError
 from .base import BaseClassifier
 from ..config.settings import Settings
@@ -42,38 +42,35 @@ class GeminiClassifier(BaseClassifier):
         Ensure your response is only the JSON object, with no additional text.
         """
 
-    async def classify_single(self, image_path: Union[str, Path]) -> Dict[str, Any]:
+    async def classify_single(self, image_source: Union[str, ImageSource]) -> Dict[str, Any]:
         """
         Classify a single clothing item using Gemini Vision API.
 
         Args:
-            image_path: Path to the image file
+            image_source: Path to the image file
 
         Returns:
             Dictionary containing classification results
         """
         try:
-            self.image_processor.check_image_file(str(image_path))
-
-            image = self.image_processor.load_image(str(image_path))
+            image_part = await self.image_processor.process_image(image_source)
 
             response = self.client.models.generate_content(
                 model=self.settings.GEMINI_MODEL,
                 contents=[
                     self.prompt_text,
-                    image
-                ]
+                    image_part
+                ],
+                config={
+                    'response_mime_type': 'application/json',
+                },
             )
 
-            try:
-                result = self._parse_json_from_gemini(response.text)
-            except json.JSONDecodeError:
-                raise APIError("Failed to parse JSON response from Gemini API")
-
+            result = json.loads(response.text)
             self._validate_response(result)
 
             return {
-                "image_path": str(image_path),
+                "image_path": str(image_source.path if isinstance(image_source, ImageSource) else image_source),
                 **result
             }
 

@@ -3,9 +3,27 @@ import json
 from pathlib import Path
 import asyncio
 from typing import Optional
+from urllib.parse import urlparse
 from .classifier.factory import ClassifierFactory
 from .config.settings import Settings
 from .error.exceptions import ClothingClassifierError
+
+
+def validate_image_path(ctx, param, value):
+    try:
+        # Check URL
+        result = urlparse(value)
+        if all([result.scheme, result.netloc]):
+            return value
+
+        # Check local file/directory
+        path = Path(value)
+        if not path.exists():
+            raise click.BadParameter(f"File or directory not found: {value}")
+        return str(path)
+
+    except Exception as e:
+        raise click.BadParameter(f"Invalid image path or URL: {value}")
 
 
 async def process_images(
@@ -14,9 +32,6 @@ async def process_images(
     image_path: str,
     batch: bool
 ) -> list:
-    """
-    이미지 처리 로직
-    """
     try:
         classifier = classifier_factory.create_classifier(settings)
 
@@ -32,9 +47,6 @@ async def process_images(
 
 
 def save_results(results: list, output_path: Optional[str]) -> None:
-    """
-    결과 저장 또는 출력
-    """
     if output_path:
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(results, f, indent=2, ensure_ascii=False)
@@ -45,12 +57,12 @@ def save_results(results: list, output_path: Optional[str]) -> None:
 
 @click.group()
 def cli():
-    """OutfitAI: AI-based clothing image classification tool."""
+    """OutfitAI: AI-powered clothing image classification tool."""
     pass
 
 
 @cli.command()
-@click.argument('image_path', type=click.Path(exists=True))
+@click.argument('image_path', callback=validate_image_path)
 @click.option('--batch', '-b', is_flag=True, help='Process multiple images from directory')
 @click.option('--output', '-o', type=click.Path(), help='Output file path')
 def classify(

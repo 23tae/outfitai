@@ -8,6 +8,17 @@ from ..config.settings import Settings
 from .logger import Logger
 
 
+class ImageSourceType(Enum):
+    LOCAL = "local"
+    URL = "url"
+
+
+@dataclass
+class ImageSource:
+    type: ImageSourceType
+    path: str
+
+
 class ImageProcessor:
     SUPPORTED_EXTENSIONS: Final[Set[str]] = {
         ".png", ".jpeg", ".jpg", ".webp", ".gif"}

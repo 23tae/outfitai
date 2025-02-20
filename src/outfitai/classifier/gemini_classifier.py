@@ -61,13 +61,12 @@ class GeminiClassifier(BaseClassifier):
                     self.prompt_text,
                     image_part
                 ],
+                config={
+                    'response_mime_type': 'application/json',
+                },
             )
 
-            try:
-                result = self._parse_json_from_gemini(response.text)
-            except json.JSONDecodeError:
-                raise APIError("Failed to parse JSON response from Gemini API")
-
+            result = json.loads(response.text)
             self._validate_response(result)
 
             return {

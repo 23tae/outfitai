@@ -22,9 +22,9 @@ AI 기반의 의류 이미지 분류 도구입니다. 의류 이미지를 분석
 
 #### 분류 항목
 
-- **색상**: 주요 색상을 HEX 코드로 표현 (예: #FF0000)
-- **카테고리**: top, bottom, outer, dress, footwear, bag, accessory, other
-- **드레스 코드**: casual, business casual, campus, date night attire, travel wear, formal, loungewear, beachwear, other
+- **색상**: white, gray, black, red, orange, yellow, green, blue, indigo, purple, other
+- **카테고리**: tops, bottoms, outerwear, dresses, shoes, bags, hats, accessories, other
+- **드레스 코드**: casual wear, business attire, campus style, date night outfit, travel wear, wedding attire, loungewear, resort wear, other
 - **계절**: spring, summer, fall, winter
 
 ### 시스템 요구사항

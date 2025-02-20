@@ -22,9 +22,9 @@ AI-powered clothing image classification tool. The tool analyzes clothing images
 
 #### Classification Criteria
 
-- **Color**: Primary color as a HEX code (e.g. #FF0000)
-- **Category**: top, bottom, outer, dress, footwear, bag, accessory, other
-- **Dress code**: casual, business casual, campus, date night attire, travel wear, formal, loungewear, beachwear, other
+- **Color**: white, gray, black, red, orange, yellow, green, blue, indigo, purple, other
+- **Category**: tops, bottoms, outerwear, dresses, shoes, bags, hats, accessories, other
+- **Dress code**: casual wear, business attire, campus style, date night outfit, travel wear, wedding attire, loungewear, resort wear, other
 - **Season**: spring, summer, fall, winter
 
 ### Requirements

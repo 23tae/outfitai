@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Dict, List, Any, Union
 from pathlib import Path
 import asyncio
+
+from ..error.exceptions import ValidationError
 from ..config.settings import Settings
 from ..utils.logger import Logger
 from ..utils.image_processor import ImageProcessor, ImageSource
@@ -25,15 +27,67 @@ class BaseClassifier(ABC):
 
     def _init_constants(self):
         """Initialize constant values used in classification."""
+        self.color_values = [
+            "white", "gray", "black", "red", "orange",
+            "yellow", "green", "blue", "indigo", "purple", "other"
+        ]
         self.category_values = [
-            "top", "bottom", "outer", "dress",
-            "footwear", "bag", "accessory", "other"
+            "tops", "bottoms", "outerwear", "dresses",
+            "shoes", "bags", "hats", "accessories", "other"
         ]
         self.dresscode_values = [
-            "casual", "business casual", "campus", "date night attire",
-            "travel wear", "formal", "loungewear", "beachwear", "other"
+            "casual wear", "business attire", "campus style", "date night outfit",
+            "travel wear", "wedding attire", "loungewear", "resort wear", "other"
         ]
         self.season_values = ["spring", "summer", "fall", "winter"]
+
+    def _create_prompt(self) -> str:
+        """Create the prompt for the API."""
+        return f"""
+        Analyze the clothing item in the image and classify it according to these rules.
+        Return a JSON object with these keys:
+        - 'color': 1 value from {self.color_values}
+        - 'category': 1 value from {self.category_values}
+        - 'dresscode': 1 value from {self.dresscode_values}
+        - 'season': 1+ values from {self.season_values} (array)
+        """
+
+    def _validate_response(self, data: Dict[str, Any]) -> None:
+        """
+        Validate the API response format and values.
+
+        Args:
+            data: Response data to validate
+
+        Raises:
+            ValidationError: If the response format is invalid
+        """
+        required_keys = ["color", "category", "dresscode", "season"]
+
+        # Check required keys
+        for key in required_keys:
+            if key not in data:
+                raise ValidationError(f"Missing required key: {key}")
+
+        # Validate color
+        if data["color"] not in self.color_values:
+            raise ValidationError(f"Invalid category: {data['color']}")
+
+        # Validate category
+        if data["category"] not in self.category_values:
+            raise ValidationError(f"Invalid category: {data['category']}")
+
+        # Validate dresscode
+        if data["dresscode"] not in self.dresscode_values:
+            raise ValidationError(f"Invalid dresscode: {data['dresscode']}")
+
+        # Validate seasons
+        if not isinstance(data["season"], list):
+            raise ValidationError("Season must be a list")
+
+        for season in data["season"]:
+            if season not in self.season_values:
+                raise ValidationError(f"Invalid season: {season}")
 
     @abstractmethod
     async def classify_single(self, image_source: Union[str, ImageSource]) -> Dict[str, Any]:
@@ -94,26 +148,3 @@ class BaseClassifier(ABC):
                     results.append(result)
 
         return results
-
-    @abstractmethod
-    def _validate_response(self, data: Dict[str, Any]) -> None:
-        """
-        Validate the API response format and values.
-
-        Args:
-            data: Response data to validate
-
-        Raises:
-            ValidationError: If the response format is invalid
-        """
-        pass
-
-    @abstractmethod
-    def _create_prompt(self) -> str:
-        """
-        Create the prompt for the API.
-
-        Returns:
-            String containing the prompt
-        """
-        pass

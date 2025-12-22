@@ -205,14 +205,14 @@ outfitai path/to/images/ --batch
 - 선택 사항:
   - `OUTFITAI_PROVIDER`: 사용할 API 제공자 ("openai" 또는 "gemini")
   - `OPENAI_MODEL`: 사용할 OpenAI 모델 (기본값: gpt-4o-mini)
-  - `GEMINI_MODEL`: 사용할 Gemini 모델 (기본값: gemini-2.0-flash)
+  - `GEMINI_MODEL`: 사용할 Gemini 모델 (기본값: gemini-2.5-flash)
 
 커스텀 설정 예시:
 ```python
 settings = Settings(
     OUTFITAI_PROVIDER="gemini",
     GEMINI_API_KEY="your-api-key",
-    GEMINI_MODEL="gemini-2.0-flash",
+    GEMINI_MODEL="gemini-2.5-flash",
 )
 classifier = ClassifierFactory.create_classifier(settings)
 ```

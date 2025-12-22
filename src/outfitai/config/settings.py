@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     OPENAI_MAX_TOKENS: int = 300
 
     # Gemini specific settings
-    GEMINI_MODEL: str = "gemini-2.0-flash"
+    GEMINI_MODEL: str = "gemini-2.5-flash"
 
     # Common settings
     BATCH_SIZE: int = 10

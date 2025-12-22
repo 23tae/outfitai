@@ -205,14 +205,14 @@ All settings can be configured through environment variables, `.env` file, or in
 - Optional:
   - `OUTFITAI_PROVIDER`: API provider to use ("openai" or "gemini") (default: openai)
   - `OPENAI_MODEL`: OpenAI model to use (default: gpt-4o-mini)
-  - `GEMINI_MODEL`: Gemini model to use (default: gemini-2.0-flash)
+  - `GEMINI_MODEL`: Gemini model to use (default: gemini-2.5-flash)
 
 Example of using custom settings:
 ```python
 settings = Settings(
     OUTFITAI_PROVIDER="gemini",
     GEMINI_API_KEY="your-api-key",
-    GEMINI_MODEL="gemini-2.0-flash",
+    GEMINI_MODEL="gemini-2.5-flash",
 )
 classifier = ClassifierFactory.create_classifier(settings)
 ```
